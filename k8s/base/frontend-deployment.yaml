@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicguessr-frontend
+  namespace: musicguessr
+  labels:
+    app: musicguessr-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: musicguessr-frontend
+  template:
+    metadata:
+      labels:
+        app: musicguessr-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/musicguessr/musicguessr-frontend
+          ports:
+            - containerPort: 8080
+          env:
+            - name: API_URL
+              value: "https://musicguessr.app"
+            - name: SPOTIFY_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: musicguessr-frontend-config
+                  key: SPOTIFY_CLIENT_ID
+                  optional: true
+            - name: APPLE_DEV_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: musicguessr-secrets
+                  key: APPLE_DEV_TOKEN
+                  optional: true
+          securityContext:
+            allowPrivilegeEscalation: false
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

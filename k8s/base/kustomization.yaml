@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: musicguessr
+resources:
+  - namespace.yaml
+  - backend-deployment.yaml
+  - backend-service.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - ingress.yaml
+
+images:
+  - name: ghcr.io/musicguessr/musicguessr-backend
+    newTag: latest
+  - name: ghcr.io/musicguessr/musicguessr-frontend
+    newTag: latest
+
+configMapGenerator:
+  - name: musicguessr-backend-config
+    literals:
+      - PORT=8080
+      - LOG_LEVEL=info
+      - INVIDIOUS_INSTANCES=https://iv.melmac.space,https://invidious.darkness.services
+      - METADATA_CACHE_TTL_SECONDS=86400
+      - THEAUDIODB_KEY=1
+
+  - name: musicguessr-frontend-config
+    literals:
+      - SPOTIFY_CLIENT_ID=
+
+secretGenerator:
+  - name: musicguessr-secrets
+    envs:
+      - secrets.env

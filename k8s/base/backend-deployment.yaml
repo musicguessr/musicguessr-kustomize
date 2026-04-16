@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicguessr-backend
+  namespace: musicguessr
+  labels:
+    app: musicguessr-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: musicguessr-backend
+  template:
+    metadata:
+      labels:
+        app: musicguessr-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/musicguessr/musicguessr-backend
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: musicguessr-backend-config
+          env:
+            - name: DISCOGS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: musicguessr-secrets
+                  key: DISCOGS_TOKEN
+                  optional: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
