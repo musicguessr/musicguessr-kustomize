@@ -18,17 +18,16 @@ spec:
       containers:
         - name: frontend
           image: ghcr.io/musicguessr/musicguessr-frontend
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          # Non-sensitive config from ConfigMap (API_URL, SITE_URL, SPOTIFY_CLIENT_ID,
+          # GOOGLE_SITE_VERIFICATION, BING_SITE_VERIFICATION — all injected by entrypoint.sh)
+          envFrom:
+            - configMapRef:
+                name: musicguessr-frontend-config
+          # Sensitive values from Secret
           env:
-            - name: API_URL
-              value: "https://musicguessr.app"
-            - name: SPOTIFY_CLIENT_ID
-              valueFrom:
-                configMapKeyRef:
-                  name: musicguessr-frontend-config
-                  key: SPOTIFY_CLIENT_ID
-                  optional: true
             - name: APPLE_DEV_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -37,6 +36,8 @@ spec:
                   optional: true
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           readinessProbe:
             httpGet:
               path: /
