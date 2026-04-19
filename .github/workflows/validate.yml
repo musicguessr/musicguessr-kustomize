@@ -1,0 +1,45 @@
+name: Validate
+
+on:
+  push:
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/validate.yml'
+
+jobs:
+  yamllint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install yamllint
+        run: pip install yamllint
+      - name: Lint YAML files
+        run: yamllint k8s/
+
+  kustomize-build:
+    name: Kustomize Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kustomize
+        uses: imranismail/setup-kustomize@v2
+      - name: Prepare dummy secrets
+        run: cp k8s/base/secrets.env.example k8s/base/secrets.env
+      - name: Build base
+        run: kustomize build k8s/base > /tmp/built.yaml
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+            | tar -xz -C /usr/local/bin
+      - name: Validate against Kubernetes schemas
+        run: |
+          kubeconform \
+            -strict \
+            -summary \
+            -kubernetes-version 1.32.0 \
+            /tmp/built.yaml

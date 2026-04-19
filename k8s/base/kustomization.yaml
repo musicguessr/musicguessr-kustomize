@@ -43,6 +43,8 @@ configMapGenerator:
       # Search engine verification tokens (appear in HTML source, not sensitive)
       - GOOGLE_SITE_VERIFICATION=RgjPqYdHKBZRkcLJmwqz_6_lapNFDwN95KPg_nU-bgw
       - BING_SITE_VERIFICATION=B9D94C6EB071A782D3737FDF1AF6C4AE
+      # Google Analytics 4 Measurement ID (e.g. G-XXXXXXXXXX) — leave empty to disable
+      - GA_MEASUREMENT_ID=G-XVVFTEXDG0
 
 secretGenerator:
   - name: musicguessr-secrets

@@ -22,7 +22,7 @@ spec:
           ports:
             - containerPort: 8080
           # Non-sensitive config from ConfigMap (API_URL, SITE_URL, SPOTIFY_CLIENT_ID,
-          # GOOGLE_SITE_VERIFICATION, BING_SITE_VERIFICATION — all injected by entrypoint.sh)
+          # GOOGLE_SITE_VERIFICATION, BING_SITE_VERIFICATION, GA_MEASUREMENT_ID — all injected by entrypoint.sh)
           envFrom:
             - configMapRef:
                 name: musicguessr-frontend-config

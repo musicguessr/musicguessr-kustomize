@@ -36,6 +36,7 @@ Set the variables relevant to your deployment:
 - SPOTIFY_CLIENT_ID=your-spotify-client-id       # optional — hides Spotify if empty
 - GOOGLE_SITE_VERIFICATION=your-token            # optional — Google Search Console
 - BING_SITE_VERIFICATION=your-token              # optional — Bing Webmaster Tools
+- GA_MEASUREMENT_ID=G-XXXXXXXXXX                 # optional — Google Analytics 4
 
 # Backend
 - FRONTEND_URL=https://your-domain.example.com   # used in deck share_url response
@@ -99,6 +100,7 @@ k8s/base/
 | `SPOTIFY_CLIENT_ID` | Spotify app client ID. If empty, Spotify option is hidden. |
 | `GOOGLE_SITE_VERIFICATION` | Google Search Console verification token (injected into `<meta>`). |
 | `BING_SITE_VERIFICATION` | Bing Webmaster Tools verification token (injected into `<meta>`). |
+| `GA_MEASUREMENT_ID` | Google Analytics 4 Measurement ID (e.g. `G-XXXXXXXXXX`). If empty, GA is disabled. |
 
 ### Frontend secrets (`musicguessr-secrets` Secret)
 
