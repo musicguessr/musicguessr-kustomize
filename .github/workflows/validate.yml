@@ -15,7 +15,7 @@ jobs:
     name: YAML Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install yamllint
         run: pip install yamllint
       - name: Lint YAML files
@@ -25,9 +25,9 @@ jobs:
     name: Kustomize Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install kustomize
-        uses: imranismail/setup-kustomize@v2
+        uses: imranismail/setup-kustomize@v3
       - name: Prepare dummy secrets
         run: cp k8s/base/secrets.env.example k8s/base/secrets.env
       - name: Build base
